@@ -1,12 +1,33 @@
-FROM alpine:3.18.3
+FROM ubuntu:22.04
 
-WORKDIR /volume
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        make \
+        build-essential \
+        libssl-dev \
+        zlib1g-dev \
+        libbz2-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        wget \
+        curl \
+        llvm \
+        libncurses5-dev \
+        libncursesw5-dev \
+        xz-utils \
+        tk-dev \
+        libffi-dev \
+        liblzma-dev \
+        git
 
-RUN apk update && \
-		apk add --no-cache python3~3.11 python3-dev~3.11 py3-pip gcc build-base linux-headers git wget
-RUN wget https://raw.githubusercontent.com/amazon-science/patchcore-inspection/main/requirements.txt && \
-		pip install -r requirements.txt
-RUN pip install jupyter torchmetrics==1.1.1
+WORKDIR /work
 
-COPY startup.sh .
-ENTRYPOINT ash -c startup.sh
+COPY Pipfile Pipfile.lock utils.py workshop.ipynb .
+
+RUN apt install python3-pip -y
+RUN pip install pipenv
+RUN pipenv sync
+
+COPY startup.sh /
+
+ENTRYPOINT bash /startup.sh

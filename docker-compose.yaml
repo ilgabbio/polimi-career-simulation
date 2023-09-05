@@ -1,7 +1,10 @@
-version: 3
+version: "3"
 services:
   jupyter:
-    container_name: jupyter
-    build: .
+    container_name: "jupyter"
+    build:
+      context: .
     ports:
       - "8888:8888"
+    volumes:
+      - ./work:/work

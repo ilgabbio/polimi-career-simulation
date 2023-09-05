@@ -1,4 +1,4 @@
-#/bin/ash
+#!/bin/bash
 
 # Only the first time:
 if [ ! -f initialized ]
@@ -11,5 +11,5 @@ then
 fi
 
 # Starting a notebook server:
-jupyter notebook --no-browser --allow-root -y --ip 0.0.0.0 --port 8888
-
+export PYTHONPATH="$PWD/patchcore-inspection"
+pipenv run jupyter notebook --no-browser --allow-root -y --ip 0.0.0.0 --port 8888
