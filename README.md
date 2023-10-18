@@ -1,45 +1,45 @@
-# ARGOVision × POLIMI: anomaly detection in industria
+# ARGOVision × POLIMI: anomaly detection in the industry
 
-In questo workshop andremo ad esplorare una tecnica molto nota in letteratura, nota come `PatchCore`, per risolvere il task di anomaly detection in un contesto industriale.
+In this workshop we will investigate the usage of a well-kown anomaly detection technique known in literature with the name of `PatchCore`.
 
-## Sommario
+## TOC
 
-1. [Requisiti](#requisiti)
-1. [Setup workspace](#setup-workspace)
-1. [Descrizione workspace](#descrizione-workspace)
-1. [Informazioni utili](#informazioni-utili)
+1. [Requirements](#requirements)
+1. [Workspace setup](#workspace-setup)
+1. [Workspace description](#workspace-description)
+1. [Useful info](#useful-info)
 1. [Tasks](#tasks)
 
-## Requisiti
+## Requirements
 
-E' necessario:
+To the aim of use this repo you need to:
 
-- Installare `docker` e `docker-compose`
-- Scaricare il dataset da [questo link](https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz) oppure dal [sito ufficiale](https://www.mvtec.com/company/research/datasets/mvtec-ad) (seguendo la prodecura di registrazione).
-- Scaricare i modelli pre-trainati (uno per categoria) da questo [link](https://drive.google.com/file/d/1vhuN7mZi19arK6WB6Ri3lvDGax4I14WS/view?usp=share_link)
+- install both `docker` and `docker-compose`;
+- download the dataset from [here](https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz) or from the [official site](https://www.mvtec.com/company/research/datasets/mvtec-ad) (registration is required);
+- Download the pre-trained models (one for each category) using [this link](https://drive.google.com/file/d/1vhuN7mZi19arK6WB6Ri3lvDGax4I14WS/view?usp=share_link).
 
-## Setup workspace
+## Workspace setup
 
-0. Verificare l'installazione di `docker` e `docker-compose`:
+0. Check that `docker` and `docker-compose` are installed and correctly working:
 
     ```sh
     docker --version
     docker compose version
     ```
 
-1. Copiare il dataset (una volta estratto) nella folder `work`
+1. Copy the downloaded (and extracted) dataset in the `work` folder;
 
-1. Buildare ed avviare l'immagine docker tramite il comando:
+1. Build and run the Docker image:
 
     ```sh
     docker compose up
     ```
 
-    Il `docker-compose.yaml` definisce ed espone un servizio `jupyter` al quale è possibile accedere per interagire con la macchina docker e il codice del repository.
+    The provided `docker-compose.yaml` starts a `jupyter` service, you can connect to that service using the browser and the link provided at startup.
 
-    NOTA: nel caso vi fossero errori durante la fase di creazione dell'environement (tramite `pipenv`), è necessario installare l'environment da zero anzichè syncarlo solamente. Per fare ciò, sono sufficienti le seguenti modifiche:
+    NOTE: in case of errors during the environment creation (via pipenv), the solution is to install the environment from scratch instead of syncing it. To this aim apply the following changes:
 
-    - Modificare il file `Dockerfile`, sostituendo:
+    - Change the `Dockerfile` substituting:
 
         ```
         COPY Pipfile Pipfile.lock .
@@ -47,33 +47,35 @@ E' necessario:
         RUN pipenv sync
         ```
 
-        con 
+        with: 
 
         ```
         COPY Pipfile .
         ...
         RUN pipenv install
         ```
-1. Copiare i modelli pre-trainati (una volta estratti) nella folder `work`
 
-1. Copiare ed incollare il link di accesso al servizio `jupyter` su un browser a scelta
+1. Copy the downloaded (and extracted) models in the `work` folder;
 
-    Il link corretto da selezionare è quello che punta a `localhost` (es., `http://127.0.0.1:8888/tree?token=XXXX`)
+1. Copy-paste the `jupyter` access link in a browser.
+    The right link to use is the one pointing to `localhost` (eg., `http://127.0.0.1:8888/tree?token=XXXX`)
 
-## Descrizione workspace
+## Workspace description
 
-Una volta conclusa la parte di setup dell'environment, avrete a disposizione la folder `work` (montata come *volume*) per interagire con il repository di anomaly detection PatchCore (`patchcore-inspection`) risolvendo i task descritti nella sezione successiva.
+Once the environment setup is completed, you will have the mounted `work` folder to interact with the Docker machine and persist your work.
+After the first machine start-up you will fnd in that folder the cloned `PatchCore` repository.
+To solve the proposed tasks, you will need to check the structure, usage, and eventually change the content of that repository.
 
-## Informazioni utili
+## Useful info
 
-Gli script del repository di PatchCore (definiti dentro la folder `bin`) utilizzano di default una GPU.
-Dal momento che l'immagine docker non ha accesso a GPU, per lanciare gli esperimenti sfruttando solamente la CPU è sufficiente modificare il parametro `--gpu` degli script interessati, impostando come default una lista vuota (`[]`).
+The repository scripts (defined in the `bin` folder), are expected to use the GPU by default.
+Being these Docker machine unable to access the GPU, to run the experiments using just the CPU it is enough to change the `--gpu` parameter in the needed scripts, setting as default an empty list (`[]`).
 
 ### Utility
 
-Per rendere più semplice l'esecuzione di script python dal jupyter notebook, è possibile utilizzare le utility definite in `/work/utils.py`.
+To make easier the execution of python scripts in the Jupyter notebook, we suggest to use the utilities defined in `/work/utils.py`.
 
-- Esempio 1: eseguire un training
+- Example 1: execution of a training process:
 
     ```python
     from bin.run_patchcore import main as trainer
@@ -85,7 +87,7 @@ Per rendere più semplice l'esecuzione di script python dal jupyter notebook, è
             print("Done.")
     ```
 
-- Esempio 2: eseguire una valutazione
+- Example 2: execute a model evaluation:
 
     ```python
     from bin.load_and_evaluate_patchcore import main as evaluator
@@ -97,34 +99,34 @@ Per rendere più semplice l'esecuzione di script python dal jupyter notebook, è
             print("Done.")
     ```
 
-Inoltre, è consigliato iniziare dal notebook `workshop.ipynb`, il quale definisce già alcune facilitazioni.
+Moreover, we suggest to start the work using the notebook `workshop.ipynb`. Some prebuilt utilities are available there.
 
 ## Tasks
 
-1. Effettuare un training (o fitting) con l'algoritmica di `PatchCore` scegliendo un numero arbitrario di categorie di oggetti e dimensione dell'immagine*
+1. Execute a training (also called `fitting`) using the `PatchCore` algorithm. Choose arbitrarily the categories and the image size.
 
-1. Effettuare una valutazione (tramite l'apposito script) con l'algoritmica di `PatchCore` partendo dai modelli ottenuti dal training precedente
+1. Execute an evaluation (using the evaluation script) using the `PatchCore` algorithm. Use the models obtained at the end of the previous step.
 
-1. Produrre una distribuzione sugli score di tutte le classi disponibili
-    - Utilizzare i risultati (`results.csv`) del modello `step1/0000` all'interno della folder `experiments`
-    - I modelli sono stati fittati utilizzando una dimensione dell'immagine pari a 224x224
+1. Generate a score distribution over all the available classes:
+    - Use the results (results.csv) obtained from the model `step1/0000` in the `experiments` folder.
+    - All the models have been trained using an image size equal to 224x224.
 
-1. Analizzare le maschere di anomalia che vengono prodotte sulle immagini di test su una categoria a scelta:
-    - Modificare il codice affinchè lo script di *evaluate* salvi predizioni, ground-truth (sia pixelwise che imagewise), 
-      nome delle immagini e threshold di anomalia per ogni categoria scelta
-    - Effettuare una valutazione utilizzando il corrispondente modello pre-trainato, estraendo i dati sopra riportati
-    - Produrre degli istogrammi sugli score pixelwise e imagewise dove si confrontano gli score relativi a immagini con difetti e senza
-        - Per il caso pixelwise, aggiungere al plot la soglia ottima di anomalia scelta dall'algoritmo
+1. Generate the anomaly masks on test images related to one of the available categories:
+    - Change the script code so that the predictions, the ground-truth (pixelwise and imagewise), image names and anomaly threshold, all were saved in a file to make them available after the evaluation.
+    - Execute an evaluation using a pre-trained model, generating the file with the saaved data for one category.
+    - Plot the histograms related to the pixelwise and imagewise scorse, comparing the score of images containing anomalies with those of images without anomalies.
+        - In the pixelwise case, add to the plot the optimal threshold selected by the algorithm.
 
-1. Identificare la categoria con le performance peggiori, utilizzando i risultati del modello pre-trainato sopra indicato
-    - Ordinare gli esempi della peggiore categoria in base ad una metrica di riferimento tra quelle disponibili
-    - Identificare gli N esempi peggiori, con N a piacere*
-    - Plottare gli N esempi peggiori, mostrando: immagine originale, anomaly mask, anomaly mask binarizzata, e ground-truth
+1. Identify the category with worst performances using the results generated by the pre-trained model in the previous steps:
+    - Sort the examples in the worst category with respect to one of the available metrics.
+    - Identify N worst examples (a small number, just to see them, say 3).
+    - Plot the found examples showing: the original image, the anomaly mask, the binarized anomaly mask, the ground-truth mask.
 
-1. Ripetere il punto precedente, questa volta prendendo la categoria e gli N esempi migliori.
+1. Repeat the previous step selecting the the best category and the best examples.
 
-1. Trainare dei modelli di anomaly detection variando la dimensione dell'immagine in input in un range a piacere*
-    - Scegliere un numero arbitrario di categorie*
-    - Produrre un grafico che metta a confronto le performance al variare della dimensione dell'immagine, scegliendo una metrica di riferimento
+1. Train the anomaly detection models for different image sizes in a selected range:
+    - select some categories;
+    - generate a plot showing the metric variation with respect to the image size change.
 
-\* In base al tempo computazionale e alle risorse di calcolo a disposizione
+NOTE: Select the number of categories and the image sizes depending on available resources and time.
+
