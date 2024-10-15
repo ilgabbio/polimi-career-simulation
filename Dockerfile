@@ -1,33 +1,20 @@
-FROM ubuntu:22.04
+FROM python:3.10
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        make \
-        build-essential \
-        libssl-dev \
-        zlib1g-dev \
-        libbz2-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        wget \
-        curl \
-        llvm \
-        libncurses5-dev \
-        libncursesw5-dev \
-        xz-utils \
-        tk-dev \
-        libffi-dev \
-        liblzma-dev \
-        git
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y libgl1 && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /work
+WORKDIR /workspace
 
-COPY Pipfile Pipfile.lock utils.py workshop.ipynb .
+RUN pip install pipenv==2022.3.28 build==1.1.1
 
-RUN apt install python3-pip -y
-RUN pip install pipenv
-RUN pipenv sync
+COPY Pipfile Pipfile.lock .
 
-COPY startup.sh /
+RUN pipenv sync --system --pre
 
-ENTRYPOINT bash /startup.sh
+COPY workshop.ipynb /workspace/
+
+EXPOSE 8888
+
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]

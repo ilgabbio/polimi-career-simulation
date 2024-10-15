@@ -1,22 +1,21 @@
-# ARGOVision × POLIMI: anomaly detection in the industry
+# ARGOVision × POLIMI: anomaly detection in industry
 
-In this workshop we will investigate the usage of a well-kown anomaly detection technique known in literature with the name of `PatchCore`.
+In this workshop we will tackle a problem of anomaly detection like we would in a real world scenario.
 
 ## TOC
 
-1. [Requirements](#requirements)
-1. [Workspace setup](#workspace-setup)
-1. [Workspace description](#workspace-description)
-1. [Useful info](#useful-info)
-1. [Tasks](#tasks)
+* [Requirements](#requirements)
+* [Workspace setup](#workspace-setup)
+* [Workspace description](#workspace-description)
+* [Enjoy](#enjoy)
 
 ## Requirements
 
 To the aim of use this repo you need to:
 
-- install both `docker` and `docker-compose`;
-- download the dataset from [here](https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz) or from the [official site](https://www.mvtec.com/company/research/datasets/mvtec-ad) (registration is required);
-- Download the pre-trained models (one for each category) using [this link](https://drive.google.com/file/d/1vhuN7mZi19arK6WB6Ri3lvDGax4I14WS/view?usp=share_link).
+- install both `docker` and `docker-compose`.
+- (optionally) Copy the `MVTec` in `workspace/datasets`. This will save some time later.
+- (optionally) You can run the notebook in Colab in case of troubles (you will need a Google account).
 
 ## Workspace setup
 
@@ -27,106 +26,21 @@ To the aim of use this repo you need to:
     docker compose version
     ```
 
-1. Copy the downloaded (and extracted) dataset in the `work` folder;
-
 1. Build and run the Docker image:
 
     ```sh
-    docker compose up
+    docker compose up --build
     ```
 
-    The provided `docker-compose.yaml` starts a `jupyter` service, you can connect to that service using the browser and the link provided at startup.
+    The provided `compose.yml` starts a `jupyter` service, you can connect to that service using the
+    browser and the link provided at startup (it looks like `http://127.0.0.1:8888/tree?token=...`).
 
-    NOTE: in case of errors during the environment creation (via pipenv), the solution is to install the environment from scratch instead of syncing it. To this aim apply the following changes:
-
-    - Change the `Dockerfile` substituting:
-
-        ```
-        COPY Pipfile Pipfile.lock .
-        ...
-        RUN pipenv sync
-        ```
-
-        with: 
-
-        ```
-        COPY Pipfile .
-        ...
-        RUN pipenv install
-        ```
-
-1. Copy the downloaded (and extracted) models in the `work` folder;
-
-1. Copy-paste the `jupyter` access link in a browser.
-    The right link to use is the one pointing to `localhost` (eg., `http://127.0.0.1:8888/tree?token=XXXX`)
 
 ## Workspace description
 
-Once the environment setup is completed, you will have the mounted `work` folder to interact with the Docker machine and persist your work.
-After the first machine start-up you will fnd in that folder the cloned `PatchCore` repository.
-To solve the proposed tasks, you will need to check the structure, usage, and eventually change the content of that repository.
+Once the environment setup is completed, you will have the mounted `workspace` folder to interact
+with the Docker machine and persist your work (you might need _sudo_ permissions to write).
 
-## Useful info
+## Enjoy
 
-The repository scripts (defined in the `bin` folder), are expected to use the GPU by default.
-Being these Docker machine unable to access the GPU, to run the experiments using just the CPU it is enough to change the `--gpu` parameter in the needed scripts, setting as default an empty list (`[]`).
-
-### Utility
-
-To make easier the execution of python scripts in the Jupyter notebook, we suggest to use the utilities defined in `/work/utils.py`.
-
-- Example 1: execution of a training process:
-
-    ```python
-    from bin.run_patchcore import main as trainer
-
-    with commandline_args(*get_train_args(...)):
-        try:
-            trainer()
-        except SystemExit:
-            print("Done.")
-    ```
-
-- Example 2: execute a model evaluation:
-
-    ```python
-    from bin.load_and_evaluate_patchcore import main as evaluator
-
-    with commandline_args(*get_evaluate_args(...)):
-        try:
-            evaluator()
-        except SystemExit:
-            print("Done.")
-    ```
-
-Moreover, we suggest to start the work using the notebook `workshop.ipynb`. Some prebuilt utilities are available there.
-
-## Tasks
-
-1. Execute a training (also called `fitting`) using the `PatchCore` algorithm. Choose arbitrarily the categories and the image size.
-
-1. Execute an evaluation (using the evaluation script) using the `PatchCore` algorithm. Use the models obtained at the end of the previous step.
-
-1. Generate a score distribution over all the available classes:
-    - Use the results (results.csv) obtained from the model `step1/0000` in the `experiments` folder.
-    - All the models have been trained using an image size equal to 224x224.
-
-1. Generate the anomaly masks on test images related to one of the available categories:
-    - Change the script code so that the predictions, the ground-truth (pixelwise and imagewise), image names and anomaly threshold, all were saved in a file to make them available after the evaluation.
-    - Execute an evaluation using a pre-trained model, generating the file with the saaved data for one category.
-    - Plot the histograms related to the pixelwise and imagewise scorse, comparing the score of images containing anomalies with those of images without anomalies.
-        - In the pixelwise case, add to the plot the optimal threshold selected by the algorithm.
-
-1. Identify the category with worst performances using the results generated by the pre-trained model in the previous steps:
-    - Sort the examples in the worst category with respect to one of the available metrics.
-    - Identify N worst examples (a small number, just to see them, say 3).
-    - Plot the found examples showing: the original image, the anomaly mask, the binarized anomaly mask, the ground-truth mask.
-
-1. Repeat the previous step selecting the the best category and the best examples.
-
-1. Train the anomaly detection models for different image sizes in a selected range:
-    - select some categories;
-    - generate a plot showing the metric variation with respect to the image size change.
-
-NOTE: Select the number of categories and the image sizes depending on available resources and time.
-
+Follow the instructions on the notebook. Don't hesitate to ask in case of troubles.

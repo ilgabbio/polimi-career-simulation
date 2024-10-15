@@ -1,0 +1,11 @@
+version: "3"
+services:
+  jupyter:
+    container_name: "jupyter"
+    build:
+      context: .
+    shm_size: 3G
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./workspace:/workspace
